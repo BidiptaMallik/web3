@@ -1,8 +1,12 @@
 import mongoose from 'mongoose';
 
-const connectDB=async()=>{
-    mongoose.connection.on('connected',()=>console.log('Database Connected'))
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log('Database Connected');
+  } catch (err) {
+    console.error('MongoDB connection error:', err.message);
+  }
+};
 
-    await mongoose.connect(`${process.env.MONGODB_URI}/CollegeAid`)
-}
-export default connectDB
+export default connectDB;

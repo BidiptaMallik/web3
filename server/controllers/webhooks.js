@@ -5,7 +5,6 @@ export const clerkWebhooks = async (req, res) => {
   try {
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-    // Verify the webhook using the raw body
     await whook.verify(req.rawBody, {
       "svix-id": req.headers["svix-id"],
       "svix-timestamp": req.headers["svix-timestamp"],
@@ -14,48 +13,43 @@ export const clerkWebhooks = async (req, res) => {
 
     const { data, type } = req.body;
 
-    // Helper to get email safely
-    const getEmail = (data) =>
-      data.email_addresses && data.email_addresses.length > 0
-        ? data.email_addresses[0].email_address
-        : data.email_address || "no-email@example.com";
+    const getEmail = d => 
+      d.email_addresses?.[0]?.email_address || d.email_address || "no-email@example.com";
+
+    console.log("Webhook received:", type, "User:", getEmail(data));
 
     switch (type) {
-      case "user.created": {
+      case "user.created":
         await User.create({
           _id: data.id,
           email: getEmail(data),
           name: `${data.first_name} ${data.last_name}`,
           imageUrl: data.image_url,
         });
-        res.status(200).json({ received: true });
+        console.log("User created in DB");
         break;
-      }
 
-      case "user.updated": {
+      case "user.updated":
         await User.findByIdAndUpdate(data.id, {
           email: getEmail(data),
           name: `${data.first_name} ${data.last_name}`,
           imageUrl: data.image_url,
         });
-        res.status(200).json({ received: true });
+        console.log("User updated in DB");
         break;
-      }
 
-      case "user.deleted": {
+      case "user.deleted":
         await User.findByIdAndDelete(data.id);
-        res.status(200).json({ received: true });
+        console.log("User deleted from DB");
         break;
-      }
 
-      default: {
-        // Unknown event type
-        res.status(200).json({ received: true });
-        break;
-      }
+      default:
+        console.log("Unknown event type:", type);
     }
+
+    res.status(200).json({ received: true });
   } catch (error) {
-    console.log("Webhook Error:", error.message);
+    console.log("Webhook error:", error.message);
     res.status(400).json({ success: false, message: error.message });
   }
 };
