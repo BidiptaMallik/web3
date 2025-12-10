@@ -1,23 +1,15 @@
 import express from "express";
-import { Webhook } from "svix";
 import User from "../models/User.js";
+import { Webhook } from "svix";
 
 const router = express.Router();
 
 router.post("/", express.raw({ type: "application/json" }), async (req, res) => {
   try {
-    const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
+    const evt = JSON.parse(req.body.toString()); 
+    const { data, type } = evt; 
 
-    // const evt = whook.verify(req.body, {
-    //   "svix-id": req.headers["svix-id"],
-    //   "svix-timestamp": req.headers["svix-timestamp"],
-    //   "svix-signature": req.headers["svix-signature"]
-    // });
-
-    const { data, type } = evt;
-
-    const getEmail = d => 
-      d.email_addresses?.[0]?.email_address || d.email_address;
+    const getEmail = d => d.email_addresses?.[0]?.email_address || d.email_address;
 
     switch (type) {
       case "user.created":
@@ -40,6 +32,9 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
       case "user.deleted":
         await User.findByIdAndDelete(data.id);
         break;
+
+      default:
+        console.log("Unhandled webhook type:", type);
     }
 
     res.status(200).json({ success: true });
