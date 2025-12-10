@@ -8,11 +8,11 @@ router.post("/", express.raw({ type: "application/json" }), async (req, res) => 
   try {
     const whook = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
-    const evt = whook.verify(req.body, {
-      "svix-id": req.headers["svix-id"],
-      "svix-timestamp": req.headers["svix-timestamp"],
-      "svix-signature": req.headers["svix-signature"]
-    });
+    // const evt = whook.verify(req.body, {
+    //   "svix-id": req.headers["svix-id"],
+    //   "svix-timestamp": req.headers["svix-timestamp"],
+    //   "svix-signature": req.headers["svix-signature"]
+    // });
 
     const { data, type } = evt;
 
