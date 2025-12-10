@@ -1,15 +1,16 @@
 import express from "express";
 import User from "../models/User.js";
-import { Webhook } from "svix";
 
 const router = express.Router();
 
-router.post("/", express.raw({ type: "application/json" }), async (req, res) => {
+// Use express.json() so Postman can send JSON normally
+router.post("/", express.json(), async (req, res) => {
   try {
-    const evt = JSON.parse(req.body.toString()); 
-    const { data, type } = evt; 
+    const evt = req.body;               // already parsed JSON
+    const { data, type } = evt;
 
-    const getEmail = d => d.email_addresses?.[0]?.email_address || d.email_address;
+    const getEmail = d =>
+      d.email_addresses?.[0]?.email_address || d.email_address;
 
     switch (type) {
       case "user.created":
