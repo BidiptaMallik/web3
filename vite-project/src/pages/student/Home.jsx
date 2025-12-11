@@ -8,7 +8,7 @@ import Footer from '../../components/student/Footer'
 
 const Home = () => {
   return (
-    <div calassName='slex slex-col items-center space-y-7 text-center'>
+    <div className='slex slex-col items-center space-y-7 text-center'>
       <Hero />
       <Companies />
       <CoursesSection />

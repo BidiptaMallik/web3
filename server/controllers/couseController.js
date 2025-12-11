@@ -11,7 +11,7 @@ export const getAllCourse=async(req,res)=>{
 }
 
 export const getCourseId=async(req,res)=>{
-    const{id}=req.body
+    const{id}=req.params
     try{
         const courseData=await Course.findById(id).populate({path:'educator'})
 

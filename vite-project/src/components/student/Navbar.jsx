@@ -3,14 +3,38 @@ import { assets } from '../../assets/assets'
 import { Link, useLocation } from 'react-router-dom'
 import {useClerk,UserButton,useUser} from '@clerk/clerk-react'
 import { AppContext } from '../../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+
 
 const Navbar = () => {
-    const {navigate,isEducator}=useContext(AppContext)
+    const {navigate,isEducator,backendUrl,setIsEducator,getToken}=useContext(AppContext)
+
     const location = useLocation();
     const isCourseListPage = location.pathname.includes('/course-list');
 
     const{openSignIn} =useClerk()
     const {user}=useUser()
+
+    const becomeEducator=async()=>{
+        try{
+            if(isEducator){
+                navigate('/educator')
+                return
+            }
+            const token=await getToken()
+            const {data}=await axios.get(backendUrl + '/api/educator/update-role',{headers:{Authorization:`Bearer ${token}`}})
+
+            if(data.success){
+                setIsEducator(true)
+                toast.success(data.message)
+            }
+        }catch(error){
+            toast.error(error.message)
+        }
+    }
+
+
     return (
         <div className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 ${
             isCourseListPage 
@@ -34,7 +58,7 @@ const Navbar = () => {
                        user&&
                        <>
                         <button className='hover:text-blue-600 transition-colors duration-200'>
-                           <button onClick={()=>{navigate('/educator')}}>{isEducator? 'Educator Dashboard':'Become Educator'}</button>
+                           <button onClick={becomeEducator}>{isEducator? 'Educator Dashboard':'Become Educator'}</button>
                         </button>
                         
                         <Link 
@@ -57,7 +81,7 @@ const Navbar = () => {
                     <div className='md:hidden flex items-center gap-2 sm:gap-5 text-gray-500'>
                         {user&& <>
                             <button className='hover:text-blue-600 transition-colors duration-200'>
-                            <button onClick={()=>{navigate('/educator')}}>{isEducator? 'Educator Dashboard':'Become Educator'}</button>
+                            <button onClick={becomeEducator}>{isEducator? 'Educator Dashboard':'Become Educator'}</button>
                         </button>
                         <Link 
                             to='/my-enrollments' 

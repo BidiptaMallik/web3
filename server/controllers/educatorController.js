@@ -2,6 +2,8 @@
 import {clerkClient} from '@clerk/express'
 import Course from '../models/Course.js'
 import { v2 as cloudinary } from 'cloudinary'
+import { Purchase } from '../models/Purchase.js'
+import User from '../models/User.js'
 
 export const updateRoleToEducator=async(req,res)=>{
     try{
@@ -21,7 +23,7 @@ export const updateRoleToEducator=async(req,res)=>{
     }
 }
 
-export const addCourse=async()=>{
+export const addCourse=async(req,res)=>{
     try{
         const {courseData}=req.body
         const imageFile=req.file
@@ -39,7 +41,7 @@ export const addCourse=async()=>{
 
         res.json({success:true,message:'Courses Added '})
     }catch(error){
-        removeEventListener.json({success:false,message:error.message})
+        res.json({success:false,message:error.message})
     }
 }
 
@@ -55,7 +57,7 @@ export const getEducatorCourses=async(req,res)=>{
     }
 }
 
-export const educatorDashboardData=async ()=>{
+export const educatorDashboardData=async (req,res)=>{
     try{
         const educator=req.auth.userId;
         const courses=await Course.find({educator});
@@ -66,7 +68,7 @@ export const educatorDashboardData=async ()=>{
             courseId:{$in:courseIds},
             status:'completed'
         })
-        const totalEarnings=purchases.reduce((sum,purchase)=>sum+purchase.amaount,0)
+        const totalEarnings=purchases.reduce((sum,purchase)=>sum+purchase.amount,0)
 
         const enrolledStudentsData=[];
         for(const course of courses){
@@ -98,7 +100,7 @@ export const getEnrolledStudentsData=async(req,res)=>{
 
         const purchases=await Purchase.find({
             courseId:{$in:courseIds},
-            status:'complete'
+            status:'completed'
         }).populate('userId','name imageUrl').populate('courseId','courseTitle')
 
         const enrolledStudents=purchases.map(purchase=>({
@@ -107,7 +109,7 @@ export const getEnrolledStudentsData=async(req,res)=>{
             purchaseDate:purchase.createdAt
         }))
 
-        res.json({success:'true',enrolledStudents})
+        res.json({success:true,enrolledStudents})
     }catch(error){
         res.json({success:false,message:error.message})
 
