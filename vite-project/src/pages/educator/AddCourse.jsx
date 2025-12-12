@@ -140,7 +140,8 @@ toast.error(data.message)
   }, []);
 
   return (
-    <div className="w-full flex flex-col p-6 pb-20 overflow-y-auto">
+    <div className="w-full flex flex-col p-6 pb-20 overflow-y-auto 
+bg-gradient-to-br from-green-50 via-green-100 to-green-200">
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 w-full">
         <div className="flex flex-col gap-1">
           <p className="font-medium">Course Title</p>

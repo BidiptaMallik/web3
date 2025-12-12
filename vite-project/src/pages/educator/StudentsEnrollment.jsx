@@ -31,7 +31,8 @@ const StudentsEnrollment = () => {
     }
   },[isEducator])
   return enrolledStudents?(
-    <div className='min-h-screen flex flex-col items-start justify-between md:p-8 md:pb-0 pt-8 pb-0'>
+    <div className="w-full flex flex-col p-6 pb-20 overflow-y-auto 
+bg-gradient-to-br from-green-50 via-green-100 to-green-200">
       <div className='flex flex-col items-center max-w-4xl w-full overflow-hidden rounded-md bg-white border border-gray-500/20'>
         <table >
           <thead className='text-gray-900 border-b border-gray-500/20 text-sm text-left'>

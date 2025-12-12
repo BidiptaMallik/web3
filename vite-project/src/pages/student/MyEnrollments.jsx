@@ -43,7 +43,7 @@ useEffect(()=>{
 
   return (
     <>
-    <div className='md:px-36 px-8 pt-10'>
+    <div className='min-h-screen flex flex-col bg-gradient-to-b from-green-100 via-green200 to-green-300'>
       <h1 className='text-2xl font-semibold'>MyEnrollments</h1>
     <table className='md:text-suto table-fixed w-full overflow-hidden border mt-10'>
       <thead className='text-gray-900 border-b border-gray-500/20 text-sm text-left max-sm:hidden'>

@@ -37,8 +37,8 @@ const Navbar = () => {
 
     return (
         <div className={`w-full fixed top-0 left-0 z-50 transition-all duration-300 ${
-            isCourseListPage 
-            ? 'bg-white shadow-md' 
+            location.pathname==='/'
+            ? 'bg-gradient-to-r from-emerald-100 to-teal-500 shadow-sm' 
             : 'bg-gradient-to-r from-emarald-100 to-teal-500 shadow-sm'
         }`}>
             <div className='relative flex items-center justify-between px-4 sm:px-10 md:px-14 lg:px-36 py-4'>
